@@ -1,0 +1,187 @@
+// Classe base (superclasse)
+abstract class Animal {
+    protected String nome;
+    protected int idade;
+    protected boolean acordado;
+    protected int fome; // Nível de 0 a 100
+
+    public Animal(String nome, int idade) {
+        this.nome = nome;
+        this.idade = idade;
+        this.acordado = false;
+        this.fome = 50;
+    }
+
+    public abstract void emitirSom();
+
+    public void dormir() {
+        if (!this.acordado) {
+            System.out.println(this.nome + " já está dormindo.");
+        } else {
+            this.acordado = false;
+            System.out.println(this.nome + " foi dormir. Zzzzz...");
+        }
+    }
+
+    public void acordar() {
+        if (this.acordado) {
+            System.out.println(this.nome + " já está acordado.");
+        } else {
+            this.acordado = true;
+            System.out.println(this.nome + " acordou!");
+        }
+    }
+
+    public void alimentar(int quantidade) {
+        if (!this.acordado) {
+            System.out.println(this.nome + " está dormindo e não pode comer agora.");
+            return;
+        }
+
+        this.fome = Math.max(0, this.fome - quantidade);
+        System.out.println(this.nome + " foi alimentado. Nível de fome agora: " + this.fome);
+        
+        if (this.fome <= 20) {
+            System.out.println(this.nome + " está satisfeito!");
+        }
+    }
+
+    public void envelhecer(int anos) {
+        this.idade += anos;
+        System.out.println(this.nome + " agora tem " + this.idade + " anos.");
+    }
+
+    public void status() {
+        String estado = this.acordado ? "acordado" : "dormindo";
+        System.out.println(this.nome + " (" + this.getClass().getSimpleName() + ") - Idade: " + this.idade);
+        System.out.println("Estado: " + estado + " | Fome: " + this.fome + "/100");
+    }
+}
+
+// Classe derivada - Cachorro
+class Cachorro extends Animal {
+    private String raca;
+    private int felicidade;
+
+    public Cachorro(String nome, int idade, String raca) {
+        super(nome, idade);
+        this.raca = raca;
+        this.felicidade = 50;
+    }
+
+    @Override
+    public void emitirSom() {
+        System.out.println(this.nome + " (um " + this.raca + ") faz: Au Au!");
+    }
+
+    public void abanarRabo() {
+        if (!this.acordado) {
+            System.out.println(this.nome + " está dormindo e não pode abanar o rabo.");
+            return;
+        }
+
+        this.felicidade = Math.min(100, this.felicidade + 10);
+        System.out.println(this.nome + " está abanando o rabo! Felicidade: " + this.felicidade);
+    }
+
+    public void brincar(int tempoMinutos) {
+        if (!this.acordado) {
+            System.out.println(this.nome + " está dormindo e não pode brincar.");
+            return;
+        }
+
+        this.felicidade = Math.min(100, this.felicidade + tempoMinutos/5);
+        this.fome = Math.min(100, this.fome + tempoMinutos/2);
+        System.out.println(this.nome + " brincou por " + tempoMinutos + " minutos!");
+        System.out.println("Felicidade: " + this.felicidade + " | Fome: " + this.fome);
+    }
+
+    @Override
+    public void status() {
+        super.status();
+        System.out.println("Felicidade: " + this.felicidade + "/100");
+    }
+}
+
+// Classe derivada - Gato
+class Gato extends Animal {
+    private String cor;
+    private int energia;
+
+    public Gato(String nome, int idade, String cor) {
+        super(nome, idade);
+        this.cor = cor;
+        this.energia = 100;
+    }
+
+    @Override
+    public void emitirSom() {
+        System.out.println(this.nome + " (um gato " + this.cor + ") faz: Miau!");
+    }
+
+    public void arranhar() {
+        if (!this.acordado) {
+            System.out.println(this.nome + " está dormindo e não pode arranhar.");
+            return;
+        }
+
+        this.energia = Math.max(0, this.energia - 15);
+        System.out.println(this.nome + " está arranhando o sofá! Energia: " + this.energia);
+    }
+
+    @Override
+    public void dormir() {
+        super.dormir();
+        this.energia = 100;
+        System.out.println(this.nome + " recuperou toda a energia!");
+    }
+
+    public void pular(int altura) {
+        if (!this.acordado) {
+            System.out.println(this.nome + " está dormindo e não pode pular.");
+            return;
+        }
+
+        if (this.energia < 20) {
+            System.out.println(this.nome + " está cansado demais para pular.");
+            return;
+        }
+
+        this.energia -= 20;
+        System.out.println(this.nome + " pulou " + altura + "cm de altura! Energia restante: " + this.energia);
+    }
+
+    @Override
+    public void status() {
+        super.status();
+        System.out.println("Energia: " + this.energia + "/100");
+    }
+}
+
+// Classe principal para execução
+public class Main {
+    public static void main(String[] args) {
+        // Criando objetos
+        Cachorro rex = new Cachorro("Rex", 3, "Labrador");
+        Gato mingau = new Gato("Mingau", 2, "branco");
+
+        System.out.println("\n=== Demonstração em Java ===");
+
+        // Interagindo com o cachorro
+        rex.acordar();
+        rex.brincar(15);
+        rex.abanarRabo();
+        rex.alimentar(30);
+        rex.status();
+
+        System.out.println("\n");
+
+        // Interagindo com o gato
+        mingau.acordar();
+        mingau.pular(50);
+        mingau.arranhar();
+        mingau.alimentar(20);
+        mingau.dormir();
+        mingau.status();
+    }
+}
